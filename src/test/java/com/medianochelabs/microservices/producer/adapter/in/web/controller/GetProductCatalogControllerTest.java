@@ -1,7 +1,8 @@
 package com.medianochelabs.microservices.producer.adapter.in.web.controller;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.List;
 
 import org.junit.Before;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medianochelabs.microservices.producer.adapter.in.web.dto.CreateProductPayload;
 import com.medianochelabs.microservices.producer.adapter.in.web.dto.ProductResource;
 
@@ -34,6 +36,7 @@ TestRestTemplate restTemplate = new TestRestTemplate();
 	private String url="/products";
 	private HttpEntity<Void> entity = null;
 	private String producto = "HTC";
+	
 	
 	@Before
 	void setUp() {
@@ -58,6 +61,16 @@ TestRestTemplate restTemplate = new TestRestTemplate();
 		ResponseEntity<ProductResource> response = restTemplate.exchange(createURLWithPort(url+"/"+producto), HttpMethod.GET, entity, ProductResource.class);
 		
 		assertNotNull(response);
+		
+		producto = "Pixel 45";
+		
+        response = restTemplate.exchange(createURLWithPort(url+"/"+producto), HttpMethod.GET, entity, ProductResource.class);
+		
+		ProductResource resource = response.getBody();
+		
+		assertNull(resource,"We were expecting a null resource instead got: "+resource);
+		
+		
 	}
 	
 	
